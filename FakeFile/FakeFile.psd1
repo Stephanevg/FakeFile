@@ -95,7 +95,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Files','Random','Create Files','classes','psconfeu','dummy','data')
+        Tags = @('Files','Random','classes','psconfeu','dummy','data')
 
         # A URL to the license for this module.
         # LicenseUri = ''
