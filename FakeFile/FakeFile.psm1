@@ -72,7 +72,10 @@ Function New-FakeFile {
     .SYNOPSIS
         Generates random files with meaningfull names of a specific total size.
     .DESCRIPTION
-        Function example for the PSConfEu2020 
+        I wrote this function during a live coding session for psconfeu 2020 of a function to a class.
+        This module represents the result of this exercise. 
+        The talk can be found here -> https://youtu.be/sQ8hnEovZpM
+        By default, the function will create the file in the current directory ($pwd)
     .EXAMPLE
         New-FakeFile -NumberOfFiles 4 -TotalSize 32MB
     .OUTPUTS
@@ -86,7 +89,7 @@ Function New-FakeFile {
     Param(
         $NumberOfFiles = 1,
         $TotalSize = 1MB,
-        $FolderPath = $PSScriptRoot
+        $FolderPath = ($pwd).Path
     )
 
     $Generator = [FakeFileGenerator]::New()
