@@ -18,7 +18,7 @@ Enum MediaExtensions {
 
 Class FakeFileGenerator {
     [System.IO.DirectoryInfo]$FolderPath = $PSScriptRoot
-    [int]$TotalSize = 1MB
+    [int64]$TotalSize = 1MB
     [Int]$NumberOfFiles = 5
 
     FakeFileGenerator(){}
@@ -31,6 +31,9 @@ Class FakeFileGenerator {
 
         for ($i = $This.NumberOfFiles; $i -gt 0; $i--) {
             $FileNAme = $this.GetFileName()
+            If(!($this.FolderPath.Exists)){
+                $this.FolderPath.Create()
+            }
             $FileFullPath = Join-Path -Path $this.FolderPath -ChildPath $FileName
             $Null = [IO.File]::WriteAllBytes($FileFullPath, $out)
             $AllFiles += [System.IO.FileInfo]$FileFullPath 
@@ -56,7 +59,7 @@ Class FakeFileGenerator {
         $This.FolderPath = $FolderPath
     }
 
-    [Void]SetTotalSize([Int]$TotalSize){
+    [Void]SetTotalSize([Int64]$TotalSize){
         $this.TotalSize = $TotalSize
     }
 
@@ -99,5 +102,4 @@ Function New-FakeFile {
     $Generator.Create()
 
 }
-
 
