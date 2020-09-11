@@ -17,9 +17,10 @@ Enum MediaExtensions {
 }
 
 Class FakeFileGenerator {
-    [System.IO.DirectoryInfo]$FolderPath = $PSScriptRoot
+    [System.IO.DirectoryInfo]$FolderPath = ($pwd).Path#$PSScriptRoot
     [int64]$TotalSize = 1MB
     [Int]$NumberOfFiles = 5
+    [System.Collections.ArrayList] $Extensions = [System.Collections.ArrayList]@()
 
     FakeFileGenerator(){}
 
@@ -29,7 +30,7 @@ Class FakeFileGenerator {
         $out = new-object byte[] $SingleSize
         $AllFiles = @()
 
-        for ($i = $This.NumberOfFiles; $i -gt 0; $i--) {
+        for ($i = $This.NumberOfFiles; $i -ge 0; $i--) {
             $FileNAme = $this.GetFileName()
             If(!($this.FolderPath.Exists)){
                 $this.FolderPath.Create()
@@ -51,7 +52,7 @@ Class FakeFileGenerator {
     }
 
     [String] GetExtension(){
-        REturn ( "." + ([Enum]::GetNames("OfficeExtensions") | Get-Random))
+        REturn ($this.Extensions | Get-Random)
         
     }
 
@@ -66,10 +67,29 @@ Class FakeFileGenerator {
     [Void]SetNumberOfFiles([Int]$NumberOfFiles){
         $this.NumberOfFiles = $NumberOfFiles
     }
+
+    AddExtension([String[]]$Extension){
+        Foreach($Ext in $Extension){
+            If($ext.StartsWith(".")){
+                $this.Extensions.Add($Ext)
+            }else{
+                $this.Extensions.Add(".$($Ext)")
+            }
+            
+        }
+    }
+
+    AddExtensionFromEnum([Enum]$EnumName){
+        $EnumExtensions = [Enum]::GetNames($EnumName)
+        $This.AddExtension($EnumExtensions)
+    }
    
 
 }
 
+Function New-FakeFileGenerator {
+    Return [FakeFileGenerator]::New()
+}
 Function New-FakeFile {
     <#
     .SYNOPSIS
@@ -90,15 +110,36 @@ Function New-FakeFile {
         https://github.com/Stephanevg/FakeFile
     #>
     Param(
-        $NumberOfFiles = 1,
-        $TotalSize = 1MB,
-        $FolderPath = ($pwd).Path
+        $NumberOfFiles, #= 1,
+        $TotalSize ,#=1MB,
+        $FolderPath, #=($pwd).Path,
+        [FakeFileGenerator]$FakeFileGenerator
     )
 
-    $Generator = [FakeFileGenerator]::New()
-    $Generator.SetNumberOfFiles($NumberOfFiles)
-    $Generator.SetTotalSize($TotalSize)
-    $Generator.SetFolderPath($FolderPath)
+    If($FakeFileGenerator){
+        $Generator = $FakeFileGenerator
+    }else{
+
+        $Generator = [FakeFileGenerator]::New()
+        $Generator.AddExtensionFromEnum("OfficeExtensions")
+    }
+
+    If($NumberOfFiles){
+
+        $Generator.SetNumberOfFiles($NumberOfFiles)
+    }
+
+    If($TotalSize){
+
+        $Generator.SetTotalSize($TotalSize)
+    }
+
+    If($FolderPath){
+
+        $Generator.SetFolderPath($FolderPath)
+    }
+
+    
     $Generator.Create()
 
 }
