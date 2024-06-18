@@ -17,7 +17,7 @@ Enum MediaExtensions {
 }
 
 Class FakeFileGenerator {
-    [System.IO.DirectoryInfo]$FolderPath = ($pwd).Path#$PSScriptRoot
+    [System.IO.DirectoryInfo]$FolderPath = ($pwd).Path
     [int64]$TotalSize = 1MB
     [Int]$NumberOfFiles = 5
     [System.Collections.ArrayList] $Extensions = [System.Collections.ArrayList]@()
@@ -52,7 +52,7 @@ Class FakeFileGenerator {
     }
 
     [String] GetExtension(){
-        REturn ($this.Extensions | Get-Random)
+        Return ($this.Extensions | Get-Random)
         
     }
 
@@ -79,7 +79,7 @@ Class FakeFileGenerator {
         }
     }
 
-    AddExtensionFromEnum([Enum]$EnumName){
+    AddExtensionFromEnum([String]$EnumName){
         $EnumExtensions = [Enum]::GetNames($EnumName)
         $This.AddExtension($EnumExtensions)
     }
@@ -110,9 +110,9 @@ Function New-FakeFile {
         https://github.com/Stephanevg/FakeFile
     #>
     Param(
-        $NumberOfFiles, #= 1,
+        [int]$NumberOfFiles, #= 1,
         $TotalSize ,#=1MB,
-        $FolderPath, #=($pwd).Path,
+        [System.IO.DirectoryInfo]$FolderPath, #=($pwd).Path,
         [FakeFileGenerator]$FakeFileGenerator
     )
 
@@ -135,7 +135,9 @@ Function New-FakeFile {
     }
 
     If($FolderPath){
-
+        if ($FolderPath.Exists -eq $false) {
+            $FolderPath = New-Item -Path $FolderPath.FullName -ItemType Directory
+        }
         $Generator.SetFolderPath($FolderPath)
     }
 
