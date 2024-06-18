@@ -22,9 +22,9 @@ Class FakeFileGenerator {
     [Int]$NumberOfFiles = 5
     [System.Collections.ArrayList] $Extensions = [System.Collections.ArrayList]@()
 
-    FakeFileGenerator(){}
+    FakeFileGenerator() {}
 
-    [System.IO.FileInfo[]]Create(){
+    [System.IO.FileInfo[]]Create() {
         
         $SingleSize = $this.TotalSize / $this.NumberOfFiles
         $out = new-object byte[] $SingleSize
@@ -32,7 +32,7 @@ Class FakeFileGenerator {
 
         for ($i = $This.NumberOfFiles; $i -ge 0; $i--) {
             $FileNAme = $this.GetFileName()
-            If(!($this.FolderPath.Exists)){
+            If (!($this.FolderPath.Exists)) {
                 $this.FolderPath.Create()
             }
             $FileFullPath = Join-Path -Path $this.FolderPath -ChildPath $FileName
@@ -44,42 +44,43 @@ Class FakeFileGenerator {
         
     }
 
-    [String] GetFileName(){
+    [String] GetFileName() {
         $Array = (Get-Verb | Select-Object verb | Get-Random -Count 2).verb
         
         $FName = $Array -join ""
         Return ($FName + $This.GetExtension())
     }
 
-    [String] GetExtension(){
+    [String] GetExtension() {
         Return ($this.Extensions | Get-Random)
         
     }
 
-    [Void]SetFolderPath([System.IO.DirectoryInfo]$FolderPath){
+    [Void]SetFolderPath([System.IO.DirectoryInfo]$FolderPath) {
         $This.FolderPath = $FolderPath
     }
 
-    [Void]SetTotalSize([Int64]$TotalSize){
+    [Void]SetTotalSize([Int64]$TotalSize) {
         $this.TotalSize = $TotalSize
     }
 
-    [Void]SetNumberOfFiles([Int]$NumberOfFiles){
+    [Void]SetNumberOfFiles([Int]$NumberOfFiles) {
         $this.NumberOfFiles = $NumberOfFiles
     }
 
-    AddExtension([String[]]$Extension){
-        Foreach($Ext in $Extension){
-            If($ext.StartsWith(".")){
+    AddExtension([String[]]$Extension) {
+        Foreach ($Ext in $Extension) {
+            If ($ext.StartsWith(".")) {
                 $this.Extensions.Add($Ext)
-            }else{
+            }
+            else {
                 $this.Extensions.Add(".$($Ext)")
             }
             
         }
     }
 
-    AddExtensionFromEnum([String]$EnumName){
+    AddExtensionFromEnum([String]$EnumName) {
         $EnumExtensions = [Enum]::GetNames($EnumName)
         $This.AddExtension($EnumExtensions)
     }
@@ -111,30 +112,31 @@ Function New-FakeFile {
     #>
     Param(
         [int]$NumberOfFiles, #= 1,
-        $TotalSize ,#=1MB,
+        $TotalSize , #=1MB,
         [System.IO.DirectoryInfo]$FolderPath, #=($pwd).Path,
         [FakeFileGenerator]$FakeFileGenerator
     )
 
-    If($FakeFileGenerator){
+    If ($FakeFileGenerator) {
         $Generator = $FakeFileGenerator
-    }else{
+    }
+    else {
 
         $Generator = [FakeFileGenerator]::New()
         $Generator.AddExtensionFromEnum("OfficeExtensions")
     }
 
-    If($NumberOfFiles){
+    If ($NumberOfFiles) {
 
         $Generator.SetNumberOfFiles($NumberOfFiles)
     }
 
-    If($TotalSize){
+    If ($TotalSize) {
 
         $Generator.SetTotalSize($TotalSize)
     }
 
-    If($FolderPath){
+    If ($FolderPath) {
         if ($FolderPath.Exists -eq $false) {
             $FolderPath = New-Item -Path $FolderPath.FullName -ItemType Directory
         }
