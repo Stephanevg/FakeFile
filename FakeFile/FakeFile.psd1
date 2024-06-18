@@ -33,7 +33,7 @@ Copyright = '(c) stephanevg. All rights reserved.'
 Description = 'Create random files with meaningfull names of specific sizes.'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '5.1'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -69,7 +69,10 @@ PowerShellVersion = '5.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('New-FakeFile','New-FakeFileGenerator')
+FunctionsToExport = @(
+    'New-FakeFile',
+    'New-FakeFileGenerator'
+    )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -95,7 +98,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Files','Random','classes','psconfeu','dummy','data')
+        Tags = @('Files','Random','classes','psconfeu','dummy','data','generator','fake','diskspace')
 
         # A URL to the license for this module.
         # LicenseUri = ''
